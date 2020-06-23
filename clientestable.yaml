@@ -1,0 +1,30 @@
+clientesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: clientes
+      AttributeDefinition:
+        - AttributeName: identificacion
+          AttributeType: N
+        - AttributeName: tipo_identificacion
+          AttributeType: S
+        - AttributeName: nombres
+          AttributeType: S
+        - AttributeName: apellidos
+          AttributeType: S
+        - AttributeName: edad
+          AttributeType: N
+        - AttributeName: ciudad_nacimiento
+          AttributeType: S
+      KeySchema:
+        - AttributeName: identificacion
+          KeyType: HASH
+        - AttributeName: tipo_identificacion
+          KeyType: RANGE
+      LocalSecondaryIndexes:
+        - IndexName: edad
+          KeySchema:
+            - AttributeName: edad
+              KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 3
+        WriteCapacityUnits: 3

@@ -1,0 +1,146 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Resources:
+  clientesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: clientes
+      AttributeDefinitions:
+        - AttributeName: identificacion
+          AttributeType: N
+        - AttributeName: tipo_identificacion
+          AttributeType: S
+        - AttributeName: edad
+          AttributeType: N
+      KeySchema:
+        - AttributeName: identificacion
+          KeyType: HASH
+        - AttributeName: tipo_identificacion
+          KeyType: RANGE
+      LocalSecondaryIndexes:
+        - IndexName: edad
+          Projection:            
+            ProjectionType: INCLUDE
+            NonKeyAttributes:
+              - edad
+          KeySchema:
+            - AttributeName: identificacion
+              KeyType: HASH
+            - AttributeName: edad
+              KeyType: RANGE
+      ProvisionedThroughput:
+        ReadCapacityUnits: 3
+        WriteCapacityUnits: 3
+
+  clientsGET:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: nodejs10.x
+      Handler: clientsGET.handler
+      Policies:
+        - AmazonDynamoDBFullAccess
+      Events:
+        clientsGETApi:
+          Type: Api
+          Properties:
+            Path: /clients
+            Method: get
+
+  clientGET:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: nodejs10.x
+      Handler: clientGET.handler
+      Policies:
+        - AmazonDynamoDBFullAccess
+      Events:
+        clientGETApi:
+          Type: Api
+          Properties:
+            Path: /client
+            Method: get
+            RequestParameters:
+              - method.request.querystring.identificacion:
+                  Required: false
+                  Caching: false
+              - method.request.querystring.tipo_identificacion:
+                  Required: false
+                  Caching: false
+
+  clientPOST:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: nodejs10.x
+      Handler: clientPOST.handler
+      Policies:
+        - AmazonDynamoDBFullAccess
+      Events:
+        clientPOSTApi:
+          Type: Api
+          Properties:
+            Path: /client
+            Method: post
+ 
+  clientPUT:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: nodejs10.x
+      Handler: clientPUT.handler
+      Policies:
+        - AmazonDynamoDBFullAccess
+      Events:
+        clientPUTApi:
+          Type: Api
+          Properties:
+            Path: /client
+            Method: put
+            RequestParameters:
+              - method.request.querystring.identificacion:
+                  Required: false
+                  Caching: false
+              - method.request.querystring.tipo_identificacion:
+                  Required: false
+                  Caching: false
+
+  clientDelete:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: nodejs10.x
+      Handler: clientDELETE.handler
+      Policies:
+        - AmazonDynamoDBFullAccess
+      Events:
+        clientDeleteApi:
+          Type: Api
+          Properties:
+            Path: /client
+            Method: delete
+            RequestParameters:
+              - method.request.querystring.identificacion:
+                  Required: false
+                  Caching: false
+              - method.request.querystring.tipo_identificacion:
+                  Required: false
+                  Caching: false
+
+  clientEdadGET:
+    Type: AWS::Serverless::Function
+    Properties:
+      Runtime: nodejs10.x
+      Handler: clientEdadGET.handler
+      Policies:
+        - AmazonDynamoDBFullAccess
+      Events:
+        clientEdadApi:
+          Type: Api
+          Properties:
+            Path: /client/edad
+            Method: get
+            RequestParameters:
+              - method.request.querystring.edad:
+                  Required: false
+                  Caching: false
+    
+    
+         
